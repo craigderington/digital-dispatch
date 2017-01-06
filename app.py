@@ -48,11 +48,14 @@ def main():
             auth = HTTPBasicAuth('digitaldispatch', 'owlsitedemo')
 
             try:
+                # post the data to tank data history
                 r1 = requests.post(url_1, headers=hdr, auth=auth, json=payload)
-                r2 = requests.put(url_2, headers=hdr, auth=auth, json=payload)
 
-                if r1.status_code == 200:
+                if r1.status_code == 201:
                     print('SUCCESS! ' + r1.content)
+
+                    # update the tank with the latest sensor value
+                    r2 = requests.put(url_2, headers=hdr, auth=auth, json=payload)
 
                     if r2.status_code == 200:
                         print('SUCCESS! ' + r2.content)
@@ -66,10 +69,10 @@ def main():
                             sys.exit('file %s, line %d: %s' % (filename, reader.line_num, e))
 
                     else:
-                        print('FAIL: HTTP returned a ' + str(r2.status_code) + ' statuse code.')
+                        print('FAIL R2: HTTP returned a ' + str(r2.status_code) + ' status code.')
 
                 else:
-                    print('FAIL: HTTP returned a ' + str(r2.status_code) + ' status code.')
+                    print('FAIL R1: HTTP returned a ' + str(r1.status_code) + ' status code.')
 
             except requests.HTTPError as e:
                 print('Sorry, a communication error has occurred ' + str(e))
