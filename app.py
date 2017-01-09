@@ -7,6 +7,7 @@ import json
 import requests
 from requests.auth import HTTPBasicAuth
 from datetime import datetime
+import config
 
 
 def main():
@@ -19,10 +20,10 @@ def main():
     """
 
     # the tank ID
-    tank_id = 1279
+    tank_id = config.tank_id
 
     # first, open the data file and read the first line
-    with open('data/frontend_tankdatahistory_7077.csv', 'r') as f:
+    with open(config.file_path, 'r') as f:
         try:
             reader = csv.reader(f)
             next(f)
@@ -39,13 +40,13 @@ def main():
             hdr = {
                 "Content-Type": "application/json",
                 "Accept": "application/json",
-                "X-CSRFToken": '7BY4ZQHQTXRuL4FrmuVQGb1GqtBi6EIR'
+                "X-CSRFToken": config.Token
             }
 
             url_1 = 'https://portal.owlsite.net/api/tankdata/'
             url_2 = 'https://portal.owlsite.net/api/tanks/' + str(tank_id) + '/'
 
-            auth = HTTPBasicAuth('digitaldispatch', 'owlsitedemo')
+            auth = HTTPBasicAuth(config.loginusername, config.loginpassword)
 
             try:
                 # post the data to tank data history
@@ -62,7 +63,7 @@ def main():
 
                         # open the file and write out the remaining rows
                         try:
-                            with open('data/frontend_tankdatahistory_7077.csv', 'w') as f1:
+                            with open(config.file_path, 'w') as f1:
                                 writer = csv.writer(f1)
                                 writer.writerows(reader)
                         except csv.Error as e:
